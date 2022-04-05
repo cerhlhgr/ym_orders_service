@@ -65,24 +65,7 @@ async function formatingData(res, item)
 
                     await google_sheets.init(data)
 
-                    result_arr.push({
-                        order_id:order.id,
-                        shop_name:item.shop_name,
-                        shop_client_id:item.client_id,
-                        last_update_date:order.statusUpdateDate,
-                        model:item.model,
-                        create_date: order.creationDate,
-                        status:order.status == "CANCELLED_BEFORE_PROCESSING" ? "заказ отменен до начала его обработки" : order.status == "CANCELLED_IN_DELIVERY" ? "заказ отменен во время его доставки" :
-                            order.status == "CANCELLED_IN_PROCESSING" ? "заказ отменен во время его обработки" : order.status == "DELIVERY" ? "заказ передан службе доставки" :
-                                order.status == "DELIVERED" ? "заказ доставлен" : order.status == "PARTIALLY_RETURNED" ? "заказ частично возвращен покупателем" : order.status == "PICKUP" ? "заказ доставлен в пункт выдачи" :
-                                    order.status == "PROCESSING" ? "заказ в обработке" :  order.status == "REJECTED" ? "заказ создан, но не оплачен" : "неизвестный статус заказа",
-                        offer_name:itemin.offerName,
-                        market_sku:itemin.marketSku,
-                        delivery_region:order.deliveryRegion.name,
-                        payment_type:order.paymentType == "CREDIT" ? "заказ оформлен в кредит" : order.paymentType == "POSTPAID" ? "заказ оплачен после того, как был получен" : "заказ оплачен до того, как был получен",
-                        count:itemin.count,
-                        price:+total
-                    })
+                    result_arr.push(data)
                 }
 
             }
@@ -131,7 +114,7 @@ async function csvFromat(data)
         const bot = new TelegramBot(process.env.TELEGRAM_KEY_YA_ANALYTIC, {polling: false});
 
         await bot.sendDocument(process.env.CHAT_ID_YA_ANALYTIC,`${appRoot}/results/${name}.csv`,{
-            caption:"@n_paleev"
+            caption:"results"
         })
     }
     catch (err)
@@ -201,7 +184,7 @@ async function exec(item)
                 limit: 50,
             }, {
                 headers: {
-                    Authorization: 'OAuth oauth_token="' + item.token + '",  oauth_client_id="9d4f5befeb894689a92205896231f4f1"'
+                    Authorization: 'OAuth oauth_token="' + item.token + `",  oauth_client_id="${process.env.OAUTH_CLIENT_ID}"`
                 }
             });
 
@@ -265,6 +248,6 @@ async function getSales(data)
  
 
 
+task.start()
 
-
-init()
+//init()
